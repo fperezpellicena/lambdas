@@ -1,6 +1,8 @@
 package unit.com.lambdas;
 
+import org.junit.Before;
 import org.junit.Test;
+import unit.com.lambdas.domain.User;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,57 +16,73 @@ public class StreamOperationsTest {
 
     @Test
     public void simpleCollectToListOperation() {
-        List<String> animals = Stream.of("cat", "dog", "bird")
+        List<String> collectedAnimals = Stream.of("cat", "dog", "bird")
                 .collect(toList());
-        assertEquals(asList("cat", "dog", "bird"), animals);
+	    final List<String> expectedAnimals = asList("cat", "dog", "bird");
+	    assertEquals(expectedAnimals, collectedAnimals);
     }
 
 
     @Test
     public void simpleMapOperation() {
-        List<String> upperCaseAnimals = Stream.of("cat", "dog", "bird")
+        List<String> collectedAnimals = Stream.of("cat", "dog", "bird")
                 .map(animal -> animal.toUpperCase())
                 .collect(toList());
-        assertEquals(asList("CAT", "DOG", "BIRD"), upperCaseAnimals);
+	    final List<String> expectedUppercaseAnimals = asList("CAT", "DOG", "BIRD");
+	    assertEquals(expectedUppercaseAnimals, collectedAnimals);
     }
 
     @Test
     public void simpleFilterOperation() {
-        List<String> filteredAnimals = Stream.of("cat", "dog", "bird")
+        List<String> collectedAnimals = Stream.of("cat", "dog", "bird")
                 .filter(animal -> animal.startsWith("c"))
                 .collect(toList());
-        assertEquals(asList("cat"), filteredAnimals);
+	    final List<String> filteredAnimals = asList("cat");
+	    assertEquals(filteredAnimals, collectedAnimals);
     }
 
     @Test
     public void simpleFlatMapOperation() {
-        List<String> filteredAnimals = Stream.of(asList("cat", "dog", "bird"), asList("horse", "duck", "crocodile"))
+	    final List<String> pets = asList("cat", "dog", "bird");
+	    final List<String> wildAnimals = asList("horse", "duck", "crocodile");
+	    List<String> filteredAnimals = Stream.of(pets, wildAnimals)
                 .flatMap(animals -> animals.stream())
                 .collect(toList());
-        assertEquals(asList("cat", "dog", "bird", "horse", "duck", "crocodile"), filteredAnimals);
+	    final List<String> fauna = asList("cat", "dog", "bird", "horse", "duck", "crocodile");
+	    assertEquals(fauna, filteredAnimals);
     }
 
     @Test
     public void simpleMaxOperation() {
-        String lastAnimal = Stream.of("cat", "dog", "bird")
-                .max(Comparator.comparing(animal -> animal.charAt(0)))
+	    User john = new User("John Doe", 26);
+	    User paul = new User("Paul Pitts", 19);
+	    User lisa = new User("Lisa Romain", 24);
+        User agedUser = Stream.of(john, paul, lisa)
+                .max(Comparator.comparing(user -> user.getAge()))
                 .get();
-        assertEquals("dog", lastAnimal);
+        assertEquals(john, agedUser);
     }
 
     @Test
     public void simpleMinOperation() {
-        String firstAnimal = Stream.of("cat", "dog", "bird")
-                .min(Comparator.comparing(animal -> animal.charAt(0)))
+	    User john = new User("John Doe", 26);
+	    User paul = new User("Paul Pitts", 19);
+	    User lisa = new User("Lisa Romain", 24);
+	    User youngerUser = Stream.of(john, paul, lisa)
+                .min(Comparator.comparing(user -> user.getAge()))
                 .get();
-        assertEquals("bird", firstAnimal);
+        assertEquals(paul, youngerUser);
     }
 
     @Test
     public void simpleReduceOperation() {
-        int sum = Stream.of(1, 2, 3, 4, 5)
-                .reduce(0, (a,b) -> a + b);
-        assertEquals(15, sum);
+	    User john = new User("John Doe", 26);
+	    User paul = new User("Paul Pitts", 19);
+	    User lisa = new User("Lisa Romain", 24);
+        int sum = Stream.of(john, paul, lisa)
+			    .map(user -> user.getAge())
+                .reduce(0, (ageOfUserA, ageOfUserB) -> (ageOfUserA + ageOfUserB));
+        assertEquals(69, sum);
     }
 
 }

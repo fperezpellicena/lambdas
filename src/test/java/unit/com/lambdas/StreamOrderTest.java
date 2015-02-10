@@ -24,29 +24,31 @@ public class StreamOrderTest {
     public void orderNotGuaranteed() {
         Set<Integer> nums = new HashSet<>(Arrays.asList(4, 2, 3, 1));
         List<Integer> lambdaNums = nums.stream().collect(Collectors.toList());
-
+        
         // May not pass
         //assertEquals(Arrays.asList(4, 2, 3, 1), lambdaNums);
     }
 
     @Test
     public void encounterOrder() {
-        Set<Integer> nums = new HashSet<>(Arrays.asList(4, 2, 3, 1));
-        List<Integer> lambdaNums = nums.stream()
+        Set<Integer> originalIntegerSet = new HashSet<>(Arrays.asList(4, 2, 3, 1));
+        List<Integer> sortedIntegerSet = originalIntegerSet.stream()
                 .sorted()   // perform natural ordering
                 .collect(Collectors.toList());
 
-        assertEquals(Arrays.asList(1, 2, 3, 4), lambdaNums);
+	    final List<Integer> naturalSortedSet = Arrays.asList(1, 2, 3, 4);
+	    assertEquals(naturalSortedSet, sortedIntegerSet);
     }
 
     @Test
     public void encounterOrderPropagation() {
-        Set<Integer> nums = new HashSet<>(Arrays.asList(4, 2, 3, 1));
-        List<Integer> lambdaNums = nums.stream()
+        Set<Integer> originalIntegerSet = new HashSet<>(Arrays.asList(4, 2, 3, 1));
+        List<Integer> sortedIntegerSet = originalIntegerSet.stream()
                 .sorted()           // perform natural ordering(encounter order)
                 .map(x -> x + 1)    // encounter order is preserved
                 .collect(Collectors.toList());
 
-        assertEquals(Arrays.asList(2, 3, 4, 5), lambdaNums);
+	    final List<Integer> naturalSortedSet = Arrays.asList(2, 3, 4, 5);
+	    assertEquals(naturalSortedSet, sortedIntegerSet);
     }
 }
