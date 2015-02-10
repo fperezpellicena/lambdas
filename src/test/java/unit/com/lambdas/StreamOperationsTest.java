@@ -1,14 +1,15 @@
 package unit.com.lambdas;
 
-import org.junit.Before;
 import org.junit.Test;
 import unit.com.lambdas.domain.User;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.averagingInt;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
@@ -69,10 +70,22 @@ public class StreamOperationsTest {
 	    User paul = new User("Paul Pitts", 19);
 	    User lisa = new User("Lisa Romain", 24);
 	    User youngerUser = Stream.of(john, paul, lisa)
-                .min(Comparator.comparing(user -> user.getAge()))
+                .min(Comparator.comparing(User::getAge))        // method reference
                 .get();
         assertEquals(paul, youngerUser);
     }
+
+	@Test
+	public void simpleAverageOperation() {
+		User john = new User("John Doe", 26);
+		User paul = new User("Paul Pitts", 19);
+		User lisa = new User("Lisa Romain", 24);
+		OptionalDouble average = Stream.of(john, paul, lisa)
+				 .mapToInt(user -> user.getAge())
+                 .average();
+
+		assertEquals(23.0, average.getAsDouble(), 1e-2);
+	}
 
     @Test
     public void simpleReduceOperation() {
